@@ -4,7 +4,7 @@ export interface Habit {
   id: string;
   name: string;
   frequrency: "daily" | "weekly";
-  completedDate: string[];
+  completedDates: string[];
   createdAt: string;
 }
 
@@ -28,13 +28,29 @@ const habitSlice = createSlice({
         id: Date.now().toString(),
         name: action.payload.name,
         frequrency: action.payload.frequency,
-        completedDate:[],
+        completedDates:[],
         createdAt: new Date().toString(),
       }
       state.habits.push(newHabit);
     },
-  }
+    toggleHabit: (
+      state,
+      action: PayloadAction <{ id:string; date:string}>
+    ) => {
+      const habit = state.habits.find((h) => h.id === action.payload.id);
+
+      if(habit){
+        const index = habit.completedDates.indexOf(action.payload.date);
+        if(index>-1){
+          habit.completedDates.splice(index,1)
+        }else{
+          habit.completedDates.push(action.payload.date);
+        }
+      }
+    },
+    removeHabit: () => {},
+  },
 });
 
-export const {addHabit} = habitSlice.actions;
+export const {toggleHabit,addHabit} = habitSlice.actions;
 export default habitSlice.reducer;
